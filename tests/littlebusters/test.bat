@@ -1,1 +1,0 @@
-@dmd simple_image.d simple_image_png.d -run test.d
