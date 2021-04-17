@@ -18,4 +18,5 @@ As well, `comptoe` is compatible with other PS1/PS2/PSP games in the "Tales of" 
 
 # Links
 - https://soywiz.com
+- https://blog.tales-tra.com
 - https://github.com/talestra
