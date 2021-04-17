@@ -36,8 +36,8 @@ int modifier = 0, raw = 0, silent = 0, once = 0;
 void show_header_once() {
 	if (once || silent) return;
 	printf("%s",
-		"Compressor/Decompressor utility for 'Tales of...' Games - version " VERSION "\n"
-        "Copyright (C) 2006-2009 soywiz - http://www.tales-tra.com/\n"
+		"Compressor/Decompressor Utility for 'Tales of' Games - Version " VERSION "\n"
+        "Copyright (C) 2006-2009 soywiz - https://blog.tales-tra.com\n"
 		"\n"
 	);
 	once = 1;
