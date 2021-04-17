@@ -17,5 +17,5 @@ As well, `comptoe` is compatible with other PS1/PS2/PSP games in the "Tales of" 
 2. Note there is no extension.  To run, use `./comptoe`
 
 # Links
-- http://www.soywiz.com
-- http://www.tales-tra.com
+- https://soywiz.com
+- https://github.com/talestra
