@@ -13,8 +13,8 @@ As well, `comptoe` is compatible with other PS1/PS2/PSP games in the "Tales of" 
 3. Open a command prompt in the `tcc` directory and enter `gcc complib.c compto.c -o comptoe.exe`
 
 ## Linux / macOS
-1. `gcc complib.c compto.c -o comptoe`
-2. Note there is no extension.  To run, use `./comptoe`
+1. `gcc complib.c compto.c -o comptoe.exe`
+2. Note there is no extension.  To run, use `./comptoe.exe`
 
 # Links
 - https://soywiz.com
