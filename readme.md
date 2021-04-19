@@ -10,7 +10,7 @@ As well, `comptoe` is compatible with other PS1/PS2/PSP games in the "Tales of" 
 ## Windows
 1. Download and extract Tiny C Compiler (tcc.exe) from http://download.savannah.gnu.org/releases/tinycc/
 2. Copy `complib.c`, `complib.h`, and `compto.c` to the extracted `tcc` folder.
-3. Open a command prompt in the `tcc` directory and enter `gcc complib.c compto.c -o comptoe.exe`
+3. Open a command prompt in the `tcc` directory and enter `tcc complib.c compto.c -o comptoe.exe`
 
 ## Linux / macOS
 1. `gcc complib.c compto.c -o comptoe.exe`
