@@ -312,7 +312,7 @@ int DecodeFile(char *in, char *out, int raw, int version) {
 	unsigned int inl, outl; int error = SUCCESS;
 	void *ind = 0, *outd = 0; FILE *fin = 0, *fout = 0;
 
-	printf("Decoding[%02X] %s -> %s...", version, in, out);
+	if (!silent) printf("Decoding[%02X] %s -> %s...", version, in, out);
 
 	if ((fin = fopen(in, "rb")) == 0) cleanup(ERROR_FILE_IN);
 
@@ -351,7 +351,7 @@ _cleanup:
 	if (fout) fclose(fout);
 	if (fin ) fclose(fin);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
@@ -370,7 +370,7 @@ int EncodeFile(char *in, char *out, int raw, int version) {
 
 	//printf("%d, %d\n", version, eversion);
 
-	printf("Encoding[%02X] %s -> %s...", version, in, out);
+	if (!silent) printf("Encoding[%02X] %s -> %s...", version, in, out);
 
 	if ((fin = fopen(in, "rb")) == 0) cleanup(ERROR_FILE_IN);
 
@@ -407,7 +407,7 @@ _cleanup:
 	if (fout) fclose(fout);
 	if (fin ) fclose(fin);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
@@ -416,7 +416,7 @@ int DumpTextBuffer(char *out) {
 	int error = SUCCESS;
 	FILE *fout = 0;
 
-	printf("Dumping text buffer...");
+	if (!silent) printf("Dumping text buffer...");
 	
 	LzState *State = LzStateCreate();
 	if (State == NULL) goto _cleanup;
@@ -432,7 +432,7 @@ _cleanup:
 	if (State != NULL) LzStateDelete(State);
 	if (fout) fclose(fout);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
@@ -441,7 +441,7 @@ int CheckCompression(char *in, int version) {
 	FILE *fin = 0; void *ind = 0, *outd = 0, *outd2 = 0;
 	unsigned int error = SUCCESS, inl, outl, outl2;
 
-	printf("Checking compression [%02X] (%s) ...", version, in);
+	if (!silent) printf("Checking compression [%02X] (%s) ...", version, in);
 
 	if ((fin = fopen(in, "rb")) == 0) cleanup(ERROR_FILE_IN);
 
@@ -472,7 +472,7 @@ _cleanup:
 
 	if (fin) fclose(fin);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
