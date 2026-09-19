@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "complib.h"
 
@@ -141,12 +142,9 @@ int Encode(int version, void *in, int inl, void *out, unsigned int *outl) {
 	
 	if (version == 0) {
 		while (1) {
-			int left = inst - insp;
-			int left8 = left;
-			//printf("left8:%d\n", left8);
-			if (left8 > 8) left8 = 8;
-			//put2(((1 << left8) - 1) << (8 - left8));
-			put2(((1 << left8) - 1) << (0));
+			ptrdiff_t left = inst - insp;
+			int left8 = (left > 8) ? 8 : (left > 0) ? (int)left : 0;
+			put2((unsigned char)((1 << left8) - 1));
 
 			for (i = 0; i < 8; i++) {
 				get(c);
@@ -158,11 +156,11 @@ int Encode(int version, void *in, int inl, void *out, unsigned int *outl) {
 
 		if (insp != inst) {
 			LzStateDelete(State);
-			printf("(insp != inst) (%d != %d)\n", insp, inst);
+			printf("(insp != inst) (%p != %p)\n", (void *)insp, (void *)inst);
 			return ERROR_BAD_INPUT;
 		}
 
-		*outl = ousp - (unsigned char *)out;
+		*outl = (unsigned int)(ousp - (unsigned char *)out);
 
 		LzStateDelete(State);
 		return error;
@@ -265,11 +263,11 @@ _cleanup:
 
 	if (State == NULL) return ERROR_MALLOC;
 	if (insp != inst) {
-		printf("(insp != inst) (%d != %d)\n", insp, inst);
+		printf("(insp != inst) (%p != %p)\n", (void *)insp, (void *)inst);
 		return ERROR_BAD_INPUT;
 	}
 
-	*outl = ousp - (unsigned char *)out;
+	*outl = (unsigned int)(ousp - (unsigned char *)out);
 	LzStateDelete(State);
 
 	return SUCCESS;
@@ -302,7 +300,7 @@ _cleanup:
 	if (State == NULL) return ERROR_MALLOC;
 	if (insp != inst) return ERROR_BAD_INPUT;
 
-	*outl = ousp - (unsigned char *)out;
+	*outl = (unsigned int)(ousp - (unsigned char *)out);
 	LzStateDelete(State);
 
 	return error;
