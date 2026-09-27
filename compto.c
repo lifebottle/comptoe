@@ -110,7 +110,9 @@ int main(int argc, char **argv) {
 			if (strcmp(arg, "-r") == 0 || strcmp(arg, "-raw") == 0) { raw = 1; continue; }
 
 			// Modo silencioso
-			if (strcmp(arg, "-s") == 0) { silent = 1; fclose(stdout); continue; }
+			// Do not fclose(stdout): writing to a closed stdout abort()s on modern
+			// Windows CRT (exit code 0xC0000409 / STATUS_STACK_BUFFER_OVERRUN).
+			if (strcmp(arg, "-s") == 0) { silent = 1; continue; }
 		}
 
 		// Acciones

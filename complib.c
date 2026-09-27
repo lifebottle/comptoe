@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "complib.h"
 
@@ -141,12 +142,9 @@ int Encode(int version, void *in, int inl, void *out, unsigned int *outl) {
 	
 	if (version == 0) {
 		while (1) {
-			int left = inst - insp;
-			int left8 = left;
-			//printf("left8:%d\n", left8);
-			if (left8 > 8) left8 = 8;
-			//put2(((1 << left8) - 1) << (8 - left8));
-			put2(((1 << left8) - 1) << (0));
+			ptrdiff_t left = inst - insp;
+			int left8 = (left > 8) ? 8 : (left > 0) ? (int)left : 0;
+			put2((unsigned char)((1 << left8) - 1));
 
 			for (i = 0; i < 8; i++) {
 				get(c);
@@ -158,11 +156,11 @@ int Encode(int version, void *in, int inl, void *out, unsigned int *outl) {
 
 		if (insp != inst) {
 			LzStateDelete(State);
-			printf("(insp != inst) (%d != %d)\n", insp, inst);
+			printf("(insp != inst) (%p != %p)\n", (void *)insp, (void *)inst);
 			return ERROR_BAD_INPUT;
 		}
 
-		*outl = ousp - (unsigned char *)out;
+		*outl = (unsigned int)(ousp - (unsigned char *)out);
 
 		LzStateDelete(State);
 		return error;
@@ -265,11 +263,11 @@ _cleanup:
 
 	if (State == NULL) return ERROR_MALLOC;
 	if (insp != inst) {
-		printf("(insp != inst) (%d != %d)\n", insp, inst);
+		printf("(insp != inst) (%p != %p)\n", (void *)insp, (void *)inst);
 		return ERROR_BAD_INPUT;
 	}
 
-	*outl = ousp - (unsigned char *)out;
+	*outl = (unsigned int)(ousp - (unsigned char *)out);
 	LzStateDelete(State);
 
 	return SUCCESS;
@@ -302,7 +300,7 @@ _cleanup:
 	if (State == NULL) return ERROR_MALLOC;
 	if (insp != inst) return ERROR_BAD_INPUT;
 
-	*outl = ousp - (unsigned char *)out;
+	*outl = (unsigned int)(ousp - (unsigned char *)out);
 	LzStateDelete(State);
 
 	return error;
@@ -312,7 +310,7 @@ int DecodeFile(char *in, char *out, int raw, int version) {
 	unsigned int inl, outl; int error = SUCCESS;
 	void *ind = 0, *outd = 0; FILE *fin = 0, *fout = 0;
 
-	printf("Decoding[%02X] %s -> %s...", version, in, out);
+	if (!silent) printf("Decoding[%02X] %s -> %s...", version, in, out);
 
 	if ((fin = fopen(in, "rb")) == 0) cleanup(ERROR_FILE_IN);
 
@@ -351,7 +349,7 @@ _cleanup:
 	if (fout) fclose(fout);
 	if (fin ) fclose(fin);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
@@ -370,7 +368,7 @@ int EncodeFile(char *in, char *out, int raw, int version) {
 
 	//printf("%d, %d\n", version, eversion);
 
-	printf("Encoding[%02X] %s -> %s...", version, in, out);
+	if (!silent) printf("Encoding[%02X] %s -> %s...", version, in, out);
 
 	if ((fin = fopen(in, "rb")) == 0) cleanup(ERROR_FILE_IN);
 
@@ -407,7 +405,7 @@ _cleanup:
 	if (fout) fclose(fout);
 	if (fin ) fclose(fin);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
@@ -416,7 +414,7 @@ int DumpTextBuffer(char *out) {
 	int error = SUCCESS;
 	FILE *fout = 0;
 
-	printf("Dumping text buffer...");
+	if (!silent) printf("Dumping text buffer...");
 	
 	LzState *State = LzStateCreate();
 	if (State == NULL) goto _cleanup;
@@ -432,7 +430,7 @@ _cleanup:
 	if (State != NULL) LzStateDelete(State);
 	if (fout) fclose(fout);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }
@@ -441,7 +439,7 @@ int CheckCompression(char *in, int version) {
 	FILE *fin = 0; void *ind = 0, *outd = 0, *outd2 = 0;
 	unsigned int error = SUCCESS, inl, outl, outl2;
 
-	printf("Checking compression [%02X] (%s) ...", version, in);
+	if (!silent) printf("Checking compression [%02X] (%s) ...", version, in);
 
 	if ((fin = fopen(in, "rb")) == 0) cleanup(ERROR_FILE_IN);
 
@@ -472,7 +470,7 @@ _cleanup:
 
 	if (fin) fclose(fin);
 
-	printf("%s\n", GetErrorString(error));
+	if (!silent) printf("%s\n", GetErrorString(error));
 
 	return error;
 }

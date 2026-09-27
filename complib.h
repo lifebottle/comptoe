@@ -11,6 +11,9 @@
 	
 	#define  __declspec(dllexport) 
 
+	/* Defined in compto.c; when set, EncodeFile/DecodeFile skip status printf. */
+	extern int silent;
+
 	char *GetErrorString(int error);
 	int Encode(int version, void *in, int inl, void *out, unsigned int *outl);
 	int Decode(int version, void *in, int inl, void *out, unsigned int *outl);
